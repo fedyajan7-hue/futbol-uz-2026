@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { kv } from '@vercel_kv'; // Эта библиотека будет работать с базой из Шага 1
+import { kv } from '@vercel/kv';
 
 export async function POST(request: Request) {
   try {
