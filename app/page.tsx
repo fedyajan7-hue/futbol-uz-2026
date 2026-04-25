@@ -42,7 +42,7 @@ function Countdown() {
   );
 }
 
-// Компонент для получения новости
+// Компонент для получения новости из базы данных
 function LatestNews() {
   const [news, setNews] = useState('Yangiliklar yuklanmoqda...');
 
@@ -51,15 +51,13 @@ function LatestNews() {
       try {
         const res = await fetch('/api/get-news');
         const data = await res.json();
-        // Если база пустая, выведем дефолтную фразу
         setNews(data.news || "Hozircha yangiliklar yo'q");
       } catch (e) {
-        console.error("News fetch error:", e);
-        setNews("Бот готов к приему сообщений!");
+        setNews("Yangiliklar vaqtinchalik mavjud emas");
       }
     };
     fetchNews();
-    const interval = setInterval(fetchNews, 5000); // Опрашиваем чаще для теста
+    const interval = setInterval(fetchNews, 10000); // Проверка каждые 10 секунд
     return () => clearInterval(interval);
   }, []);
 
@@ -73,7 +71,7 @@ function LatestNews() {
         "{news}"
       </p>
       <div className="mt-4 text-[10px] text-slate-500 uppercase font-black tracking-widest text-center opacity-50">
-        — LIVE UPDATE FROM TELEGRAM —
+        — Telegram orqali jonli efir —
       </div>
     </div>
   );
@@ -93,88 +91,112 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-20 selection:bg-green-500 selection:text-black">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-20">
       <nav className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 p-4">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2 group cursor-pointer">
-            <Trophy className="text-green-500 w-8 h-8 group-hover:rotate-12 transition-transform" />
+          <div className="flex items-center gap-2">
+            <Trophy className="text-green-500 w-8 h-8" />
             <span className="font-black text-2xl tracking-tighter italic uppercase">
               Futbol<span className="text-green-500">Uz</span>2026
             </span>
           </div>
-          <button className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full font-bold text-xs transition-all shadow-lg shadow-green-900/40 active:scale-95">
+          <button className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full font-bold text-xs transition-all shadow-lg shadow-green-900/40">
             LIVE
           </button>
         </div>
       </nav>
 
       <main className="max-w-6xl mx-auto p-6 pt-12">
-        {/* Блок живых новостей */}
+        {/* БЛОК ЖИВЫХ НОВОСТЕЙ */}
         <LatestNews />
 
-        <section className="text-center">
+        <section className="text-center py-8">
           <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-500 px-4 py-2 rounded-full text-[10px] font-black mb-8 tracking-[0.3em] uppercase">
             Jahon Chempionati Debyuti
           </div>
 
           <h2 className="text-6xl md:text-9xl font-black mb-6 uppercase italic tracking-tighter leading-none">
-            Tarixiy <span className="text-green-500 underline decoration-white/10 underline-offset-8">Onlar</span>
+            Tarixiy <span className="text-green-500">Onlar</span>
           </h2>
-          <p className="text-slate-400 text-lg md:text-xl mb-8 font-medium">O'zbekistonning ilk o'yiniga qoldi:</p>
+          <p className="text-slate-400 text-lg md:text-xl mb-8">O'zbekistonning ilk o'yiniga qoldi:</p>
           
           <Countdown />
 
           {/* Карточка матча */}
-          <div className="bg-slate-900/40 border border-white/5 p-10 md:p-16 rounded-[60px] shadow-2xl max-w-4xl mx-auto relative overflow-hidden mt-16">
-            <div className="flex flex-col md:flex-row justify-around items-center gap-12 relative z-10">
+          <div className="bg-slate-900/40 border border-white/5 p-10 md:p-16 rounded-[60px] shadow-2xl max-w-4xl mx-auto mt-16">
+            <div className="flex flex-col md:flex-row justify-around items-center gap-12">
               <div className="text-center w-48">
-                <div className="text-[120px] mb-6 drop-shadow-2xl grayscale-[0.2] hover:grayscale-0 transition-all">🇺🇿</div>
-                <div className="font-black text-3xl uppercase tracking-tighter italic">O'zbekiston</div>
+                <div className="text-[100px] mb-6 drop-shadow-2xl">🇺🇿</div>
+                <div className="font-black text-3xl uppercase tracking-tighter">O'zbekiston</div>
               </div>
               
               <div className="flex flex-col items-center">
-                <div className="text-6xl font-black italic text-white/10 mb-4 tracking-widest">VS</div>
+                <div className="text-5xl font-black italic text-white/10 mb-4 tracking-widest">VS</div>
                 <div className="flex items-center gap-2 text-slate-500 text-[10px] font-black uppercase tracking-widest bg-white/5 px-6 py-3 rounded-full border border-white/5">
                    <MapPin className="w-3 h-3 text-green-500" /> Mexico City
                 </div>
               </div>
 
               <div className="text-center w-48">
-                <div className="text-[120px] mb-6 drop-shadow-2xl grayscale-[0.2] hover:grayscale-0 transition-all">🇨🇴</div>
-                <div className="font-black text-3xl uppercase tracking-tighter italic">Kolumbiya</div>
+                <div className="text-[100px] mb-6 drop-shadow-2xl">🇨🇴</div>
+                <div className="font-black text-3xl uppercase tracking-tighter">Kolumbiya</div>
               </div>
             </div>
 
             {/* Блок голосования */}
-            <div className="mt-20 pt-12 border-t border-white/5">
-              <h4 className="text-slate-500 uppercase text-[10px] font-black tracking-[0.5em] mb-10">Sizning bashoratingiz?</h4>
+            <div className="mt-16 pt-12 border-t border-white/5">
+              <h4 className="text-slate-500 uppercase text-[10px] font-black tracking-[0.4em] mb-8 text-center">Sizning bashoratingiz?</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
                 {['G\'alaba', 'Durang', 'Mag\'lubiyat'].map((choice) => (
                   <button 
                     key={choice}
                     onClick={() => handleVote(choice)}
-                    className={`group relative overflow-hidden px-8 py-5 rounded-3xl font-black transition-all border-2 ${
+                    className={`px-8 py-5 rounded-3xl font-black transition-all border-2 ${
                       vote === choice 
-                      ? 'bg-green-600 border-green-400 text-white' 
+                      ? 'bg-green-600 border-green-400 text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]' 
                       : 'bg-slate-950 border-white/5 text-slate-500 hover:border-white/20 hover:text-white'
                     }`}
                   >
-                    <span className="relative z-10 uppercase italic tracking-tighter">{choice}</span>
+                    <span className="uppercase italic tracking-tighter">{choice}</span>
                   </button>
                 ))}
               </div>
               {vote && (
-                <div className="mt-8 text-green-500 font-black text-xs uppercase tracking-widest animate-bounce">
-                  ✅ Ovoz kiritildi
+                <div className="mt-8 text-green-500 font-black text-xs uppercase tracking-widest text-center">
+                  ✅ Rahmat! Ovoz qabul qilindi
                 </div>
               )}
             </div>
           </div>
         </section>
+
+        {/* Дополнительная информация */}
+        <section className="grid md:grid-cols-2 gap-8 mt-12">
+          <div className="bg-slate-900/50 border border-white/5 p-8 rounded-[40px] group hover:bg-slate-900 transition-colors">
+            <div className="bg-green-600/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
+              <ChartBar className="text-green-500 w-8 h-8" />
+            </div>
+            <h3 className="text-2xl font-black mb-3 italic uppercase tracking-tighter">AI-Bashorat</h3>
+            <p className="text-slate-500 leading-relaxed font-medium">
+              Sun'iy intellekt tahliliga ko'ra, O'zbekistonning bu bahsda g'alaba qozonish ehtimoli 
+              <span className="text-green-500 font-bold"> 38%</span>.
+            </p>
+          </div>
+
+          <div className="bg-slate-900/50 border border-white/5 p-8 rounded-[40px] group hover:bg-slate-900 transition-colors">
+            <div className="bg-blue-600/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
+              <Newspaper className="text-blue-500 w-8 h-8" />
+            </div>
+            <h3 className="text-2xl font-black mb-3 italic uppercase tracking-tighter">Arxiv</h3>
+            <p className="text-slate-500 leading-relaxed font-medium">
+              Barcha tezkor yangiliklar va intervyular shu yerda saqlanib boriladi.
+            </p>
+          </div>
+        </section>
       </main>
 
-      <footer className="text-center py-24 border-t border-white/5 mt-20">
-        <p className="text-[10px] font-black uppercase text-slate-600 tracking-[0.6em]">FutbolUz &copy; 2026 — Road to Glory</p>
+      <footer className="text-center py-20 text-slate-800 border-t border-white/5 mt-20">
+        <p className="text-[10px] font-black uppercase tracking-[0.5em]">FutbolUz &copy; 2026 — O'zbekiston Jahon Chempionatida!</p>
       </footer>
     </div>
   );
